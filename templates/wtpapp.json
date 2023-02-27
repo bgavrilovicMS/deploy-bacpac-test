@@ -107,7 +107,6 @@
                     "type": "Microsoft.Storage/storageAccounts/blobServices/containers/blobs",
                     "apiVersion": "2015-05-01-preview",
                     "name": "[concat(variables('storageAccountName'), '/default/', variables('storageContainerName'), '/', variables('tenantContosoConcertHall'),'.bacpac')]",
-                    "dependsOn": ["[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName), '/default', variables('storageContainerName'))]"],
                     "properties": {
                         "type": "BlockBlob",
                         "sourceUri": "variables('tenantContosoConcertHallStorageUri')"

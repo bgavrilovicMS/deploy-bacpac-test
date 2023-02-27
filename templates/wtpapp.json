@@ -7,7 +7,7 @@
             "metadata": {
                 "description": "User parameter will be used to create a unique Wingtip Platform Demo. Use 15 characters or less for this parameter."
             }
-        }
+        }  
     },
     "variables": {
         "lowerCaseUser": "[toLower(parameters('user'))]",
@@ -108,7 +108,7 @@
                     "apiVersion": "2015-05-01-preview",
                     "name": "[concat(variables('storageAccountName'), '/default/', variables('storageContainerName'), '/', variables('tenantContosoConcertHall'),'.bacpac')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName'), '/default', variables('storageContainerName'))]"
+                        "[concat('Microsoft.Storage/storageAccounts/',  variables('storageAccountName'), '/blobServices/default/containers/', variables('storageContainerName'))]" 
                     ],
                     "properties": {
                         "type": "BlockBlob",
@@ -122,9 +122,6 @@
             "location": "[variables('location')]",
             "type": "Microsoft.Sql/servers",
             "apiVersion": "2015-05-01-preview",
-            "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/blobs', variables('storageAccountName'), 'default', variables('storageContainerName'), concat(variables('tenantContosoConcertHall'), '.bacpac'))]"
-            ],
             "properties": {
                 "version": "12.0",
                 "administratorLogin": "[variables('administratorLogin')]",

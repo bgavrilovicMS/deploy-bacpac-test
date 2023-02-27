@@ -13,6 +13,8 @@
         "lowerCaseUser": "[toLower(parameters('user'))]",
         "location": "[resourceGroup().location]",
         "bacpacsRepo": "https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/",
+        "storageAccountName": "wingtipdemo",
+        "storageContainerName": "wingtipdemo",
         "elasticPoolEdition": "Standard",
         "elasticPoolName": "Pool1",
         "elasticPoolDtu": "50",
@@ -38,14 +40,81 @@
         "tenantContosoConcertHallStorageUri": "[concat(variables('bacpacsRepo'),variables('tenantContosoConcertHall'),'.bacpac')]",
         "tenantFabrikamJazzClubStorageUri": "[concat(variables('bacpacsRepo'),variables('tenantFabrikamJazzClub'),'.bacpac')]",
         "tenantDogwoodDojoStorageUri": "[concat(variables('bacpacsRepo'),variables('tenantDogwoodDojo'),'.bacpac')]",
-        "catalogDatabaseStorageUri": "https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/wingtipcatalogdb.bacpac",
-        "baseTenantDatabaseStorageUri": "https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/wingtiptenantdb.bacpac",
+        "catalogDatabaseStorageUri": "[concat(variables('bacpacsRepo'),'wingtipcatalogdb.bacpac')]",
+        "baseTenantDatabaseStorageUri": "[concat(variables('bacpacsRepo'),'wingtiptenantdb.bacpac')]",
         "wtpEventsAppTrafficManagerUniqueDnsName": "[concat('events.wingtip','-',variables('databasePerTenantSuffix'),'.',variables('lowerCaseUser'))]",
         "wtpEventsApp": "[concat('events-wingtip-',variables('databasePerTenantSuffix'),'-',variables('originLocation'),'-',variables('lowerCaseUser'))]",
         "wtpEventsAppPackageUri": "https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/eventsAppPackage.zip",
         "wtpEventsTrafficManagerProfileName": "[concat('events-wingtip-',variables('databasePerTenantSuffix'),'-',variables('lowerCaseUser'))]"
     },
     "resources": [
+        {
+            "name": "[variables('storageAccountName')]",
+            "location": "[variables('location')]",
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2015-05-01-preview",
+            "properties": {
+                "accessTier": "Hot"
+            },
+            "sku": {
+                "storageAccountType": "Standard_LRS"
+            },
+            "kind": "StorageV2"
+        },
+        {
+          "type": "Microsoft.Storage/storageAccounts/blobServices",
+          "apiVersion": "2015-05-01-preview",
+          "name": "[concat(parameters('storageAccountName'), '/default')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+          ],
+          "properties": {
+            "cors": {
+              "corsRules": [
+                {
+                  "allowedHeaders": [
+                    "*"
+                  ],
+                  "allowedMethods": [
+                    "GET",
+                    "POST",
+                    "PUT"
+                  ],
+                  "allowedOrigins": [
+                    "*"
+                  ],
+                  "exposedHeaders": [
+                    "x-ms-*"
+                  ],
+                  "maxAgeInSeconds": 3600
+                }
+              ]
+            }
+          }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2015-05-01-preview",
+            "name": "[concat(variables('storageAccountName'), '/default/', variables('storageContainerName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]"
+            ],
+            "properties": {
+                "publicAccess": "None"
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.Storage/storageAccounts/blobServices/containers/blobs",
+                    "apiVersion": "2015-05-01-preview",
+                    "name": "[concat(variables('storageAccountName'), '/default/', variables('storageContainerName'), '/', variables('tenantContosoConcertHall'),'.bacpac')]",
+                    "dependsOn": ["[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName), '/default', variables('storageContainerName'))]"],
+                    "properties": {
+                        "type": "BlockBlob",
+                        "sourceUri": "variables('tenantContosoConcertHallStorageUri')"
+                    }
+                }
+            ]
+        },
         {
             "name": "[variables('tenantServer')]",
             "location": "[variables('location')]",
@@ -55,7 +124,7 @@
                 "version": "12.0",
                 "administratorLogin": "[variables('administratorLogin')]",
                 "administratorLoginPassword": "[variables('administratorLoginPassword')]"
-            },
+            },      
             "resources": [
                 {
                     "dependsOn": [
@@ -117,7 +186,8 @@
                             "type": "extensions",
                             "apiVersion": "2014-04-01-preview",
                             "dependsOn": [
-                                "[variables('tenantContosoConcertHall')]"
+                                "[variables('tenantContosoConcertHall')]",
+                                "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers/blobs', variables('storageAccountName'), 'default', variables('storageContainerName'), variables('tenantContosoConcertHall'), '.bacpac')]"
                             ],
                             "properties": {
                                 "storageKeyType": "SharedAccessKey",

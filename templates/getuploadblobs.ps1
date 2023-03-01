@@ -1,9 +1,9 @@
 param(
     [parameter(Mandatory=$true)]
-    [string]$RGName
+    [string]$RGName,
 
     [parameter(Mandatory=$true)]
-    [string]$TenantId
+    [string]$TenantId,
 
     [parameter(Mandatory=$true)]
     [string]$SubscriptionId

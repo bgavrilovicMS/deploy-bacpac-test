@@ -379,7 +379,7 @@
                     "type": "config",
                     "name": "appsettings",
                     "properties": {
-                        "BlobPath": "https://wingtipsaas1.blob.core.windows.net/images-dpt/",
+                        "BlobPath": "https://wtdemoresourcestemp.blob.core.windows.net/wtdemoresourcestemp/",
                         "ConnectionTimeOut": "30",
                         "CatalogDatabase": "[variables('catalogDatabaseName')]",
                         "CatalogServer": "[variables('catalogServer')]",

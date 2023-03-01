@@ -20,7 +20,7 @@ catch
     Write-Output "Skip install"
   }
 
-Set-AzureRmContext -Tenant $TenatId -Subscription $SubscriptionId
+Set-AzureRmContext -Tenant $TenantId -Subscription $SubscriptionId
 
 
 Invoke-WebRequest 'https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/dogwooddojo.bacpac' -OutFile dogwooddojo.bacpac

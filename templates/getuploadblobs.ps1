@@ -1,6 +1,12 @@
 param(
     [parameter(Mandatory=$true)]
     [string]$RGName
+
+    [parameter(Mandatory=$true)]
+    [string]$TenantId
+
+    [parameter(Mandatory=$true)]
+    [string]$SubscriptionId
 )
 
 try
@@ -13,6 +19,10 @@ catch
   {
     Write-Output "Skip install"
   }
+
+Set-AzureRmContext -Tenant $TenatId -Subscription $SubscriptionId
+
+
 Invoke-WebRequest 'https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/dogwooddojo.bacpac' -OutFile dogwooddojo.bacpac
 Invoke-WebRequest 'https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/contosoconcerthall.bacpac' -OutFile contosoconcerthall.bacpac
 Invoke-WebRequest 'https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/fabrikamjazzclub.bacpac' -OutFile fabrikamjazzclub.bacpac

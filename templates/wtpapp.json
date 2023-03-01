@@ -12,7 +12,7 @@
     "variables": {
         "lowerCaseUser": "[toLower(parameters('user'))]",
         "location": "[resourceGroup().location]",
-        "bacpacsRepo": "[concat()]",
+        "bacpacsRepo": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/',variables('storageContainerName'),'/')]",
         "storageAccountName": "[toLower(replace(resourceGroup().name,'-',''))]",
         "storageContainerName": "wingtipdemo",
         "elasticPoolEdition": "Standard",
@@ -122,7 +122,7 @@
             "identity": {
                 "type": "userAssigned",
                 "userAssignedIdentities": {
-                  "[concat('/subscriptions/, subscription().subscriptionId, '/resourceGroups', resourceGroup().name, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/wtdemomanagedid')]": {}
+                  "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.ManagedIdentity/userAssignedIdentities/wtdemomanagedid')]": {}
                 }
             },
             "properties": {

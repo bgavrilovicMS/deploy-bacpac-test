@@ -1,3 +1,8 @@
+param(
+    [parameter(Mandatory=$true)]
+    [string]$RGName
+)
+
 try
   { 
   	Enable-AzureRmAlias -Scope CurrentUser
@@ -15,7 +20,7 @@ Invoke-WebRequest 'https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/
 
 
 
-$StorageAccount = Get-AzureRmStorageAccount -ResourceGroupName 'wtdemo-github-27022023' -Name wingtipdemo
+$StorageAccount = Get-AzureRmStorageAccount -ResourceGroupName $RGName -Name wingtipdemo
 $Context = $StorageAccount.Context
 
 Set-AzureStorageBlobContent `

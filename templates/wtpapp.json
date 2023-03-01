@@ -52,7 +52,7 @@
             "name": "[variables('storageAccountName')]",
             "location": "[variables('location')]",
             "type": "Microsoft.Storage/storageAccounts",
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2021-04-01",
             "properties": {
                 "accessTier": "Hot"
             },
@@ -63,7 +63,7 @@
         },
         {
           "type": "Microsoft.Storage/storageAccounts/blobServices",
-          "apiVersion": "2015-05-01-preview",
+          "apiVersion": "2021-04-01",
           "name": "[concat(variables('storageAccountName'), '/default')]",
           "dependsOn": [
             "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
@@ -94,7 +94,7 @@
         },
         {
             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2015-05-01-preview",
+            "apiVersion": "2021-04-01",
             "name": "[concat(variables('storageAccountName'), '/default/', variables('storageContainerName'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]"
@@ -105,7 +105,7 @@
             "resources": [
                 {
                     "type": "Microsoft.Storage/storageAccounts/blobServices/containers/blobs",
-                    "apiVersion": "2015-05-01-preview",
+                    "apiVersion": "2021-04-01",
                     "name": "[concat(variables('storageAccountName'), '/default/', variables('storageContainerName'), '/', variables('tenantContosoConcertHall'),'.bacpac')]",
                     "dependsOn": [
                         "[concat('Microsoft.Storage/storageAccounts/',  variables('storageAccountName'), '/blobServices/default/containers/', variables('storageContainerName'))]" 
@@ -116,6 +116,24 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "Microsoft.Resources/deploymentScripts",
+            "api-version": "2020-10-01",
+            "name": "runPowerShellInlineWithOutput",
+            "location": "[variables('location')]",
+            "kind": "AzurePowerShell",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/',  variables('storageAccountName'), '/blobServices/default/containers/', variables('storageContainerName'))]" 
+            ],
+            "properties": {
+                "azPowerShellVersion": "8.3",
+                "arguments": "[concat('-RGName', ' ', resourceGroup().name)]",
+                "timeout": "PT1H",
+                "primaryScriptUri": "https://raw.githubusercontent.com/bgavrilovicMS/deploy-bacpac-test/main/templates/getuploadblobs.ps1",
+                "cleanupPreference": "OnSuccess",
+                "retentionInterval": "P1D"
+            }
         },
         {
             "name": "[variables('tenantServer')]",

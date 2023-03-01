@@ -6,8 +6,6 @@ param(
 try
   { 
   	Enable-AzureRmAlias -Scope CurrentUser
-    Install-Module Az.Storage -AllowClobber -Force
-    Install-Module Az.Accounts -AllowClobber - Force
     Import-Module Az.Storage
     Import-Module Az.Accounts
   }

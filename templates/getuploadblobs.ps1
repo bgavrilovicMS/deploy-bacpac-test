@@ -6,7 +6,7 @@ param(
     [string]$TenantId,
 
     [parameter(Mandatory=$true)]
-    [string]$SubscriptionId
+    [string]$SubscriptionName
 )
 
 try
@@ -20,7 +20,7 @@ catch
     Write-Output "Skip install"
   }
 
-Set-AzureRmContext -Tenant $TenantId -Subscription $SubscriptionId
+Set-AzureRmContext -Tenant $TenantId -Subscription $SubscriptionName
 
 
 Invoke-WebRequest 'https://github.com/bgavrilovicMS/deploy-bacpac-test/raw/main/data/dogwooddojo.bacpac' -OutFile dogwooddojo.bacpac

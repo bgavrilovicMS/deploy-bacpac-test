@@ -127,7 +127,7 @@
             },
             "properties": {
                 "azPowerShellVersion": "8.3",
-                "arguments": "[concat('-RGName', ' ', resourceGroup().name, ' -TenantId ', tenant().tenantId, ' -SubscriptionId ', subscription().subscriptionId)]",
+                "arguments": "[concat('-RGName', ' ', resourceGroup().name, ' -TenantId ', tenant().tenantId, ' -SubscriptionName ', subscription().displayName)]",
                 "timeout": "PT1H",
                 "primaryScriptUri": "https://raw.githubusercontent.com/bgavrilovicMS/deploy-bacpac-test/main/templates/getuploadblobs.ps1",
                 "cleanupPreference": "OnSuccess",
